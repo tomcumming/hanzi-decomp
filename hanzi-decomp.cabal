@@ -1,0 +1,33 @@
+cabal-version: 3.4
+name: hanzi-decomp
+version: 0.1.0.0
+license: MIT
+license-file: LICENSE
+maintainer: mail@tomcumming.co.uk
+
+common shared
+    ghc-options: -Wall
+    default-language: GHC2021
+    default-extensions:
+        OverloadedStrings
+        LambdaCase
+        ViewPatterns
+    build-depends: 
+        base ^>=4.19.1.0,
+        text,
+
+library
+    import: shared
+    exposed-modules:
+    hs-source-dirs: src
+
+executable hanzi-decomp
+    import: shared
+    main-is: Main.hs
+    hs-source-dirs: exe
+    build-depends:
+        diagrams-core,
+        diagrams-lib,
+        diagrams-svg,
+        hanzi-decomp,
+        svg-builder,
