@@ -1,6 +1,7 @@
 module Main where
 
 import Control.Category ((>>>))
+import Data.Foldable (fold)
 import Data.Function ((&))
 import Data.Text qualified as T
 import Diagrams qualified as D
@@ -11,6 +12,18 @@ import Text.Read qualified as String
 
 readMaybe :: (Read a) => T.Text -> Maybe a
 readMaybe = T.unpack >>> String.readMaybe
+
+data Span = Span
+  { spanStart :: !Int,
+    spanLen :: !Int
+  }
+
+renderCharacterSpan :: Span -> [D.Diagram SVG.SVG] -> D.Diagram SVG.SVG
+renderCharacterSpan Span {..} = zipWith go [0 ..] >>> fold
+  where
+    go idx
+      | idx >= spanStart && idx < spanStart + spanLen = D.fc D.black
+      | otherwise = D.fc (D.blend 0.5 D.white D.black)
 
 parseStroke :: forall m n. (MonadFail m, Num n, Read n) => T.Text -> m (D.V2 n, [D.Segment D.Closed D.V2 n])
 parseStroke =
@@ -63,20 +76,22 @@ parseStroke =
 
 main :: IO ()
 main = do
-  strokes <-
+  strokesSegs <-
     traverse
       (parseStroke @IO @Double)
       好strokesRaw
 
-  let diag :: D.Diagram SVG.SVG =
-        foldMap
+  let strokes =
+        fmap
           ( \(start, segs) ->
               D.trailFromSegments segs
                 & D.closeTrail
                 & D.strokeTrail
                 & D.translate start
-                & D.fc D.black
+                & D.lw 0
           )
-          strokes
+          strokesSegs
+
+  let diag = renderCharacterSpan Span {spanStart = 0, spanLen = 3} strokes
 
   D.mainWith diag
