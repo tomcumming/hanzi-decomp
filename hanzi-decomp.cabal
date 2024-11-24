@@ -27,6 +27,7 @@ executable hanzi-decomp
     hs-source-dirs: exe
     main-is: Main.hs
     other-modules:
+        HanziDecomp.Convex
         HanziDecomp.SmallestCircle
         HanziDecomp.HanziWriterData
         HanziDecomp.Maths
