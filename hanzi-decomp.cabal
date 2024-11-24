@@ -24,11 +24,18 @@ library
 
 executable hanzi-decomp
     import: shared
-    main-is: Main.hs
     hs-source-dirs: exe
+    main-is: Main.hs
+    other-modules:
+        HanziDecomp.SmallestCircle
+        HanziDecomp.HanziWriterData
+        HanziDecomp.Maths
     build-depends:
+        aeson,
+        containers,
         diagrams-core,
         diagrams-lib,
         diagrams-svg,
         hanzi-decomp,
+        mtl,
         svg-builder,
